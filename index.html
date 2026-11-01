@@ -152,9 +152,9 @@
         <p style="color: #ccc; max-width: 300px; font-size: 13px; margin-bottom: 10px;">Select Difficulty & Tap to Start!</p>
         
         <div class="difficulty-selector">
-            <button class="diff-btn" onclick="setDiff(0.15, 'Easy')">Easy</button>
-            <button class="diff-btn active" onclick="setDiff(0.3, 'Medium')">Medium</button>
-            <button class="diff-btn" onclick="setDiff(0.5, 'Hardcore')">Hardcore</button>
+            <button class="diff-btn" onclick="setDiff(0.15, this)">Easy</button>
+            <button class="diff-btn active" onclick="setDiff(0.3, this)">Medium</button>
+            <button class="diff-btn" onclick="setDiff(0.5, this)">Hardcore</button>
         </div>
 
         <button id="start-game-btn">START GAME</button>
@@ -255,10 +255,10 @@
             "Congratulations! Tero naam ma aba Berojgar Golden Trophy rank bho! 🏆"
         ];
 
-        function setDiff(chance, name) {
+        function setDiff(chance, btnElement) {
             dodgeChance = chance;
             document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-            event.target.classList.add('active');
+            if(btnElement) btnElement.classList.add('active');
         }
 
         function playSound(type) {
@@ -308,8 +308,7 @@
                     gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
                     osc.start(now); osc.stop(now + 0.3);
                 } else if (type === 'victory') {
-                    // Epic Victory Fanfare Chime Sequence
-                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
                     notes.forEach((freq, idx) => {
                         const subOsc = audioCtx.createOscillator();
                         const subGain = audioCtx.createGain();
@@ -428,4 +427,6 @@
             const skin = new THREE.MeshStandardMaterial({ color: 0xffcc99 });
             const shirt = new THREE.MeshStandardMaterial({ color: 0x00ffcc });
 
-            const bTorso = new THREE.Mesh(new THREE.BoxGeom
+            const bTorso = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.25), shirt);
+            bTorso.position.y = 0.4;
+ 
