@@ -87,7 +87,6 @@
         }
         .punch-btn:active { transform: scale(0.92); }
         
-        /* Overlays */
         #audio-prompt, #victory-screen, #call-overlay, #bhatti-overlay, #minigame-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 5, 10, 0.98); display: flex;
@@ -144,7 +143,13 @@
             color: #fff !important; box-shadow: 0 0 20px rgba(255, 153, 51, 0.7) !important;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Use multiple redundant CDN sources with fallback loader -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+        if (typeof THREE === 'undefined') {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
+        }
+    </script>
 </head>
 <body>
     <div id="audio-prompt">
@@ -160,7 +165,6 @@
         <button id="start-game-btn" style="width: auto; padding: 12px 32px;">START GAME</button>
     </div>
 
-    <!-- Berojgar Call Overlay -->
     <div id="call-overlay">
         <div class="phone-card">
             <h3 style="color:#00ffcc; margin:0 0 8px 0;">📞 INCOMING CALL</h3>
@@ -170,7 +174,6 @@
         </div>
     </div>
 
-    <!-- Bhattiwala Dai Overlay -->
     <div id="bhatti-overlay">
         <div class="bhatti-card">
             <h3 style="color:#ff9933; margin:0 0 8px 0;">🚨 BHATTIWALA DAI</h3>
@@ -180,14 +183,11 @@
         </div>
     </div>
 
-    <!-- Mini-Game Twist Overlay (CV, Chiya, TikTok, Quiz) -->
     <div id="minigame-overlay">
         <div class="minigame-card">
             <h3 id="mg-title" style="color:#00ffcc; margin:0 0 8px 0;">🎯 RANDOM TWIST!</h3>
             <p id="mg-desc" style="color:#ddd; font-size:13px; margin-bottom:15px;">Complete twist to gain bonus score!</p>
-            <div id="mg-options" style="display: flex; flex-direction: column; gap: 8px;">
-                <!-- Dynamically injected options -->
-            </div>
+            <div id="mg-options" style="display: flex; flex-direction: column; gap: 8px;"></div>
         </div>
     </div>
 
@@ -349,6 +349,11 @@
             const container = document.getElementById('canvas-container');
             container.innerHTML = '';
 
+            if (typeof THREE === 'undefined') {
+                alert('Internet connection slow cha, Three.js load vayena! Pheri try gara solti.');
+                return;
+            }
+
             scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x050508, 0.04);
 
@@ -416,9 +421,4 @@
 
             const armGeo = new THREE.BoxGeometry(0.2, 0.8, 0.2);
             leftArm = new THREE.Mesh(armGeo, skin);
-            leftArm.position.set(-0.48, 1.1, 0);
-            surendraGroup.add(leftArm);
-
-            rightArm = new THREE.Mesh(armGeo, skin);
-            rightArm.position.set(0.48, 1.1, 0);
-            surendraGroup.add(rightA
+        
