@@ -33,28 +33,28 @@
             padding: 16px;
         }
         .hud-header {
-            display: flex; justify-content: space-between; align-items: flex-start; width: 100%;
+            display: flex; justify-content: space-between; align-items: flex-start; width: 100%; gap: 8px;
         }
         .score-board {
             background: rgba(15, 15, 25, 0.9); border: 2px solid #ff3366;
-            padding: 10px 20px; border-radius: 12px;
+            padding: 8px 14px; border-radius: 12px;
             box-shadow: 0 0 15px rgba(255, 51, 102, 0.4); color: #fff; text-align: center;
         }
-        .score-board h1 { margin: 0; font-size: 16px; color: #ff3366; letter-spacing: 1px; }
-        .score-board p { margin: 4px 0 0 0; font-size: 22px; font-weight: bold; }
+        .score-board h1 { margin: 0; font-size: 13px; color: #ff3366; letter-spacing: 1px; }
+        .score-board p { margin: 2px 0 0 0; font-size: 18px; font-weight: bold; }
         
         .health-container {
-            width: 230px; background: rgba(20, 20, 30, 0.95);
-            border: 2px solid #00ffff; border-radius: 12px; padding: 10px;
+            width: 155px; background: rgba(20, 20, 30, 0.95);
+            border: 2px solid #00ffff; border-radius: 12px; padding: 8px;
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.4);
         }
         .character-name-tag {
-            color: #ffff00; font-size: 14px; font-weight: 900;
-            margin-bottom: 6px; text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
+            color: #ffff00; font-size: 11px; font-weight: 900;
+            margin-bottom: 4px; text-shadow: 0 0 10px rgba(255, 255, 0, 0.8);
             display: flex; justify-content: space-between; align-items: center;
         }
         .health-bar-bg {
-            width: 100%; height: 14px; background: #222; border-radius: 7px;
+            width: 100%; height: 10px; background: #222; border-radius: 5px;
             overflow: hidden; border: 1px solid #555;
         }
         .health-bar-fill {
@@ -62,38 +62,42 @@
             background: linear-gradient(90deg, #ff3366, #ff9933);
             transition: width 0.1s ease-out;
         }
+        .player-hp-fill {
+            background: linear-gradient(90deg, #00ffcc, #0088ff) !important;
+        }
         #announcement {
             position: absolute; top: 30%; left: 50%;
             transform: translate(-50%, -50%) scale(0);
-            font-size: 26px; font-weight: 900; color: #ffff00;
+            font-size: 24px; font-weight: 900; color: #ffff00;
             text-shadow: 0 0 20px rgba(255, 255, 0, 0.9), 2px 2px 0px #000;
             pointer-events: none; transition: transform 0.15s ease-out, opacity 0.15s;
             opacity: 0; text-align: center; z-index: 20; width: 100%;
         }
         .controls-hint {
-            text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 12px;
-            background: rgba(0, 0, 0, 0.6); padding: 5px 12px; border-radius: 15px;
-            backdrop-filter: blur(5px); align-self: center; margin-bottom: 8px;
+            text-align: center; color: rgba(255, 255, 255, 0.8); font-size: 11px;
+            background: rgba(0, 0, 0, 0.6); padding: 4px 10px; border-radius: 15px;
+            backdrop-filter: blur(5px); align-self: center; margin-bottom: 6px;
         }
         .action-buttons {
-            display: flex; gap: 10px; justify-content: center; pointer-events: auto;
+            display: flex; gap: 8px; justify-content: center; pointer-events: auto;
         }
         .punch-btn {
             background: linear-gradient(135deg, #ff3366, #cc0033);
-            border: none; color: white; padding: 14px 20px; font-size: 15px;
-            font-weight: bold; border-radius: 35px;
+            border: none; color: white; padding: 12px 16px; font-size: 14px;
+            font-weight: bold; border-radius: 30px;
             box-shadow: 0 6px 18px rgba(255, 51, 102, 0.5);
             cursor: pointer; transition: transform 0.1s;
         }
         .punch-btn:active { transform: scale(0.92); }
         
-        #audio-prompt, #victory-screen, #call-overlay, #bhatti-overlay, #minigame-overlay {
+        #audio-prompt, #victory-screen, #gameover-screen, #call-overlay, #bhatti-overlay, #minigame-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(5, 5, 10, 0.98); display: flex;
             flex-direction: column; justify-content: center; align-items: center;
             z-index: 100; pointer-events: auto; color: white; text-align: center; padding: 20px;
         }
         #victory-screen { display: none; background: rgba(10, 15, 10, 0.97); z-index: 200; }
+        #gameover-screen { display: none; background: rgba(30, 5, 5, 0.97); z-index: 200; }
         #call-overlay { display: none; background: rgba(0, 0, 0, 0.92); z-index: 150; }
         #bhatti-overlay { display: none; background: rgba(40, 10, 5, 0.94); z-index: 160; }
         #minigame-overlay { display: none; background: rgba(10, 20, 30, 0.95); z-index: 170; }
@@ -128,7 +132,7 @@
             box-shadow: 0 0 15px rgba(0, 255, 255, 0.6);
         }
 
-        #audio-prompt button, #victory-screen button, .call-btn, .mg-btn {
+        #audio-prompt button, #victory-screen button, #gameover-screen button, .call-btn, .mg-btn {
             background: linear-gradient(135deg, #ffd700, #ff8c00);
             border: none; color: #000; font-size: 16px; font-weight: bold;
             padding: 12px 24px; border-radius: 30px; cursor: pointer;
@@ -198,6 +202,12 @@
         <button id="restart-btn" style="width: auto; padding: 12px 32px;">PLAY AGAIN SOLTI</button>
     </div>
 
+    <div id="gameover-screen">
+        <h1 style="color: #ff3366; font-size: 32px; margin-bottom: 4px;">WASTAGE OF TIME! 💀</h1>
+        <p style="color: #ff9933; font-size: 15px; font-weight: bold; margin-bottom: 15px;">Surendra counter-attacked and slapped you hard!</p>
+        <button id="gameover-retry-btn" style="width: auto; padding: 12px 32px; background: linear-gradient(135deg, #ff3366, #cc0033); color: white;">TRY AGAIN SOLTI</button>
+    </div>
+
     <div id="canvas-container"></div>
 
     <div id="ui-layer">
@@ -205,6 +215,15 @@
             <div class="score-board">
                 <h1>SCORE</h1>
                 <p id="score-val">0</p>
+            </div>
+            <div class="health-container">
+                <div class="character-name-tag">
+                    <span>🛡️ PLAYER HP</span>
+                    <span id="player-hp-val">100/100</span>
+                </div>
+                <div class="health-bar-bg">
+                    <div id="player-hp-fill" class="health-bar-fill player-hp-fill"></div>
+                </div>
             </div>
             <div class="health-container">
                 <div class="character-name-tag">
@@ -228,7 +247,6 @@
             </div>
         </div>
     </div>
-
     <script>
         let scene, camera, renderer, surendraGroup, sanoBhaiMesh;
         let head, torso, leftArm, rightArm;
@@ -236,7 +254,10 @@
         let score = 0;
         let maxHP = 500;
         let surendraHP = 500;
+        let maxPlayerHP = 100;
+        let playerHP = 100;
         let isKnockedOut = false;
+        let isGameOver = false;
         let animTimer = 0;
         let dodgeChance = 0.3;
         let hitCount = 0;
@@ -248,8 +269,8 @@
         ];
 
         const dodgeTaunts = [
-            "SURENDRA DODGED! 😂", "Miss garyo solti! 🏃‍♂️", "Too slow! 💨", 
-            "Bbachha haru jasto hanna! 🥱", "Nice try, berojgar! 🎯"
+            "SURENDRA DODGED & SLAPPED! 🩴😂", "Counter-attack! Miss garyo! 🏃‍♂️", "Too slow! Chappal khayeu! 💨", 
+            "Surendra counter punched! 🎯", "Nice try, aba HP ghatcha! 🥱"
         ];
 
         const victoryQuotes = [
@@ -421,7 +442,8 @@
             const lLeg = new THREE.Mesh(legGeo, pants);
             lLeg.position.set(-0.2, 0.45, 0);
             surendraGroup.add(lLeg);
-                        const rLeg = new THREE.Mesh(legGeo, pants);
+
+            const rLeg = new THREE.Mesh(legGeo, pants);
             rLeg.position.set(0.2, 0.45, 0);
             surendraGroup.add(rLeg);
         }
@@ -568,9 +590,8 @@
                 }, 500);
             }
         }
-
-        function triggerHit(type) {
-            if (isKnockedOut || isInterrupted) return;
+                function triggerHit(type) {
+            if (isKnockedOut || isGameOver || isInterrupted) return;
 
             hitCount++;
             
@@ -611,6 +632,19 @@
                 
                 surendraGroup.position.x = (Math.random() > 0.5 ? 1 : -1) * 0.6;
                 setTimeout(() => { surendraGroup.position.x = 0; }, 200);
+
+                let playerDmg = 15;
+                playerHP = Math.max(0, playerHP - playerDmg);
+                document.getElementById('player-hp-val').innerText = playerHP + '/' + maxPlayerHP;
+                document.getElementById('player-hp-fill').style.width = (playerHP / maxPlayerHP * 100) + '%';
+                triggerScreenShake();
+
+                if (playerHP <= 0) {
+                    isGameOver = true;
+                    setTimeout(() => {
+                        document.getElementById('gameover-screen').style.display = 'flex';
+                    }, 400);
+                }
                 return;
             }
 
@@ -648,13 +682,16 @@
         }
 
         function resetGame() {
-            surendraHP = maxHP; score = 0; hitCount = 0;
-            isKnockedOut = false; isInterrupted = false;
+            surendraHP = maxHP; playerHP = maxPlayerHP; score = 0; hitCount = 0;
+            isKnockedOut = false; isGameOver = false; isInterrupted = false;
             document.getElementById('score-val').innerText = score;
             document.getElementById('hp-val').innerText = maxHP + '/' + maxHP;
             document.getElementById('hp-fill').style.width = '100%';
+            document.getElementById('player-hp-val').innerText = maxPlayerHP + '/' + maxPlayerHP;
+            document.getElementById('player-hp-fill').style.width = '100%';
             document.getElementById('announcement').style.opacity = '0';
             document.getElementById('victory-screen').style.display = 'none';
+            document.getElementById('gameover-screen').style.display = 'none';
             document.getElementById('call-overlay').style.display = 'none';
             document.getElementById('bhatti-overlay').style.display = 'none';
             document.getElementById('minigame-overlay').style.display = 'none';
@@ -705,6 +742,7 @@
         });
 
         document.getElementById('restart-btn').addEventListener('click', resetGame);
+        document.getElementById('gameover-retry-btn').addEventListener('click', resetGame);
         document.getElementById('btn-jab').addEventListener('click', () => triggerHit('jab'));
         document.getElementById('btn-hook').addEventListener('click', () => triggerHit('hook'));
         document.getElementById('btn-uppercut').addEventListener('click', () => triggerHit('uppercut'));
