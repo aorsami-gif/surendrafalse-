@@ -143,13 +143,7 @@
             color: #fff !important; box-shadow: 0 0 20px rgba(255, 153, 51, 0.7) !important;
         }
     </style>
-    <!-- Use multiple redundant CDN sources with fallback loader -->
-    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
-    <script>
-        if (typeof THREE === 'undefined') {
-            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"><\/script>');
-        }
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 </head>
 <body>
     <div id="audio-prompt">
@@ -349,11 +343,6 @@
             const container = document.getElementById('canvas-container');
             container.innerHTML = '';
 
-            if (typeof THREE === 'undefined') {
-                alert('Internet connection slow cha, Three.js load vayena! Pheri try gara solti.');
-                return;
-            }
-
             scene = new THREE.Scene();
             scene.fog = new THREE.FogExp2(0x050508, 0.04);
 
@@ -421,4 +410,310 @@
 
             const armGeo = new THREE.BoxGeometry(0.2, 0.8, 0.2);
             leftArm = new THREE.Mesh(armGeo, skin);
-        
+            leftArm.position.set(-0.48, 1.1, 0);
+            surendraGroup.add(leftArm);
+
+            rightArm = new THREE.Mesh(armGeo, skin);
+            rightArm.position.set(0.48, 1.1, 0);
+            surendraGroup.add(rightArm);
+
+            const legGeo = new THREE.BoxGeometry(0.28, 0.9, 0.28);
+            const lLeg = new THREE.Mesh(legGeo, pants);
+            lLeg.position.set(-0.2, 0.45, 0);
+            surendraGroup.add(lLeg);
+                        const rLeg = new THREE.Mesh(legGeo, pants);
+            rLeg.position.set(0.2, 0.45, 0);
+            surendraGroup.add(rLeg);
+        }
+
+        function createSanoBhai() {
+            sanoBhaiMesh = new THREE.Group();
+            const skin = new THREE.MeshStandardMaterial({ color: 0xffcc99 });
+            const shirt = new THREE.MeshStandardMaterial({ color: 0x00ffcc });
+
+            const bTorso = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.45, 0.25), shirt);
+            bTorso.position.y = 0.4;
+            sanoBhaiMesh.add(bTorso);
+
+            const bHead = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.3, 0.3), skin);
+            bHead.position.y = 0.8;
+            sanoBhaiMesh.add(bHead);
+
+            sanoBhaiMesh.position.set(-3, 0, 0);
+            scene.add(sanoBhaiMesh);
+        }
+
+        function triggerSanoBhaiAssist() {
+            sanoBhaiMesh.position.set(-1.8, 0, 0.5);
+            const ann = document.getElementById('announcement');
+            ann.innerText = "SANO BHAI ASSIST! 👶💥 (+50 BONUS)";
+            ann.style.color = "#00ffcc";
+            ann.style.transform = 'translate(-50%, -50%) scale(1.3)';
+            ann.style.opacity = '1';
+            
+            score += 50;
+            surendraHP = Math.max(0, surendraHP - 35);
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('hp-val').innerText = surendraHP + '/' + maxHP;
+            document.getElementById('hp-fill').style.width = (surendraHP / maxHP * 100) + '%';
+            
+            triggerScreenShake();
+            playSound('uppercut');
+
+            setTimeout(() => {
+                sanoBhaiMesh.position.set(-3, 0, 0);
+                ann.style.opacity = '0';
+            }, 1200);
+        }
+
+        function triggerRandomMiniGame() {
+            isInterrupted = true;
+            playSound('ring');
+            const overlay = document.getElementById('minigame-overlay');
+            const title = document.getElementById('mg-title');
+            const desc = document.getElementById('mg-desc');
+            const options = document.getElementById('mg-options');
+            options.innerHTML = '';
+
+            let gameType = Math.floor(Math.random() * 4);
+
+            if (gameType === 0) {
+                title.innerText = "📄 CV BUILDER TWIST";
+                desc.innerText = "Select Surendra's top professional berojgar skill:";
+                let opts = [
+                    {text: "Expert Reel Scroller", correct: true},
+                    {text: "Coding Senior Architect", correct: false},
+                    {text: "Professional Sleep Master", correct: true}
+                ];
+                opts.forEach(o => {
+                    let btn = document.createElement('button');
+                    btn.className = 'mg-btn';
+                    btn.innerText = o.text;
+                    btn.onclick = () => resolveMiniGame(o.correct, 60);
+                    options.appendChild(btn);
+                });
+            } else if (gameType === 1) {
+                title.innerText = "☕ CHIYA PASAL RUSH";
+                desc.innerText = "Bhatti ma ghaak lai kasto chiya dine?";
+                let opts = [
+                    {text: "Strong Milk Tea with Udhari", correct: true},
+                    {text: "Green Tea without Sugar", correct: false}
+                ];
+                opts.forEach(o => {
+                    let btn = document.createElement('button');
+                    btn.className = 'mg-btn';
+                    btn.innerText = o.text;
+                    btn.onclick = () => resolveMiniGame(o.correct, 50);
+                    options.appendChild(btn);
+                });
+            } else if (gameType === 2) {
+                title.innerText = "📱 TIKTOK VIRAL CHALLENGE";
+                desc.innerText = "Surendra is doing a cringe dance! Stop him!";
+                let btn = document.createElement('button');
+                btn.className = 'mg-btn';
+                btn.style.background = "linear-gradient(135deg, #ff3366, #cc0033)";
+                btn.style.color = "#fff";
+                btn.innerText = "INTERRUPT DANCE NOW!";
+                btn.onclick = () => resolveMiniGame(true, 75);
+                options.appendChild(btn);
+            } else {
+                title.innerText = "👶 BHANJA KO QUIZ";
+                desc.innerText = "Nepal ma sabse dherai time pass kasle garcha?";
+                let opts = [
+                    {text: "Surendra & Friends", correct: true},
+                    {text: "Government Officers", correct: false}
+                ];
+                opts.forEach(o => {
+                    let btn = document.createElement('button');
+                    btn.className = 'mg-btn';
+                    btn.innerText = o.text;
+                    btn.onclick = () => resolveMiniGame(o.correct, 60);
+                    options.appendChild(btn);
+                });
+            }
+
+            overlay.style.display = 'flex';
+        }
+
+        function resolveMiniGame(isSuccess, bonusScore) {
+            document.getElementById('minigame-overlay').style.display = 'none';
+            isInterrupted = false;
+            const ann = document.getElementById('announcement');
+            
+            if (isSuccess) {
+                score += bonusScore;
+                surendraHP = Math.max(0, surendraHP - 40);
+                ann.innerText = `TWIST WON! 🚀 (+${bonusScore} Score)`;
+                ann.style.color = "#00ffcc";
+            } else {
+                ann.innerText = "WRONG ANSWER! 😂 Surendra laughed!";
+                ann.style.color = "#ff3366";
+            }
+            
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('hp-val').innerText = surendraHP + '/' + maxHP;
+            document.getElementById('hp-fill').style.width = (surendraHP / maxHP * 100) + '%';
+            
+            ann.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            ann.style.opacity = '1';
+            setTimeout(() => { ann.style.opacity = '0'; }, 1000);
+
+            if (surendraHP <= 0) {
+                isKnockedOut = true;
+                playSound('victory');
+                setTimeout(() => {
+                    const q = victoryQuotes[Math.floor(Math.random() * victoryQuotes.length)];
+                    document.getElementById('victory-quote').innerText = q;
+                    document.getElementById('victory-screen').style.display = 'flex';
+                }, 500);
+            }
+        }
+
+        function triggerHit(type) {
+            if (isKnockedOut || isInterrupted) return;
+
+            hitCount++;
+            
+            if (hitCount % 12 === 0) {
+                triggerRandomMiniGame();
+                return;
+            }
+
+            if (hitCount % 18 === 0 && Math.random() > 0.3) {
+                isInterrupted = true;
+                playSound('ring');
+                document.getElementById('bhatti-overlay').style.display = 'flex';
+                return;
+            }
+
+            if (hitCount % 10 === 0 && Math.random() > 0.4) {
+                isInterrupted = true;
+                playSound('ring');
+                document.getElementById('call-overlay').style.display = 'flex';
+                return;
+            }
+
+            if (hitCount % 7 === 0 && Math.random() > 0.3) {
+                triggerSanoBhaiAssist();
+                return;
+            }
+
+            let isDodged = Math.random() < dodgeChance;
+            const ann = document.getElementById('announcement');
+
+            if (isDodged) {
+                playSound('dodge');
+                ann.innerText = dodgeTaunts[Math.floor(Math.random() * dodgeTaunts.length)];
+                ann.style.color = '#ff3366';
+                ann.style.transform = 'translate(-50%, -50%) scale(1.1)';
+                ann.style.opacity = '1';
+                setTimeout(() => { ann.style.opacity = '0'; }, 350);
+                
+                surendraGroup.position.x = (Math.random() > 0.5 ? 1 : -1) * 0.6;
+                setTimeout(() => { surendraGroup.position.x = 0; }, 200);
+                return;
+            }
+
+            let dmg = type === 'uppercut' ? 45 : type === 'hook' ? 30 : 20;
+            playSound(type);
+            triggerScreenShake();
+
+            score += dmg;
+            surendraHP = Math.max(0, surendraHP - dmg);
+
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('hp-val').innerText = surendraHP + '/' + maxHP;
+            document.getElementById('hp-fill').style.width = (surendraHP / maxHP * 100) + '%';
+
+            ann.innerText = cheers[Math.floor(Math.random() * cheers.length)];
+            ann.style.color = '#ffff00';
+            ann.style.transform = 'translate(-50%, -50%) scale(1.2)';
+            ann.style.opacity = '1';
+            setTimeout(() => { ann.style.opacity = '0'; }, 350);
+
+            animTimer = 0.8;
+            surendraGroup.position.x = (Math.random() - 0.5) * 0.4;
+            if (type === 'uppercut') surendraGroup.rotation.x = -0.4;
+
+            if (surendraHP <= 0) {
+                isKnockedOut = true;
+                ann.style.opacity = '0';
+                playSound('victory');
+                setTimeout(() => {
+                    const q = victoryQuotes[Math.floor(Math.random() * victoryQuotes.length)];
+                    document.getElementById('victory-quote').innerText = q;
+                    document.getElementById('victory-screen').style.display = 'flex';
+                }, 500);
+            }
+        }
+
+        function resetGame() {
+            surendraHP = maxHP; score = 0; hitCount = 0;
+            isKnockedOut = false; isInterrupted = false;
+            document.getElementById('score-val').innerText = score;
+            document.getElementById('hp-val').innerText = maxHP + '/' + maxHP;
+            document.getElementById('hp-fill').style.width = '100%';
+            document.getElementById('announcement').style.opacity = '0';
+            document.getElementById('victory-screen').style.display = 'none';
+            document.getElementById('call-overlay').style.display = 'none';
+            document.getElementById('bhatti-overlay').style.display = 'none';
+            document.getElementById('minigame-overlay').style.display = 'none';
+            surendraGroup.position.set(0, 0, 0);
+            surendraGroup.rotation.set(0, 0, 0);
+        }
+
+        function onWindowResize() {
+            if (!camera || !renderer) return;
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        function animate(timestamp) {
+            requestAnimationFrame(animate);
+            if (!isKnockedOut && animTimer <= 0) {
+                const t = timestamp * 0.003;
+                surendraGroup.position.y = Math.sin(t) * 0.04;
+                head.rotation.y = Math.sin(t * 0.5) * 0.1;
+            } else if (animTimer > 0) {
+                animTimer -= 0.05;
+                if (animTimer <= 0 && !isKnockedOut) {
+                    surendraGroup.position.set(0, 0, 0);
+                    surendraGroup.rotation.set(0, 0, 0);
+                }
+            } else if (isKnockedOut) {
+                surendraGroup.rotation.z = Math.PI / 2;
+                surendraGroup.position.y = 0.2;
+            }
+            if (renderer && scene && camera) renderer.render(scene, camera);
+        }
+
+        document.getElementById('start-game-btn').addEventListener('click', () => {
+            document.getElementById('audio-prompt').style.display = 'none';
+            initThree();
+            animate(0);
+        });
+
+        document.getElementById('decline-call-btn').addEventListener('click', () => {
+            isInterrupted = false;
+            document.getElementById('call-overlay').style.display = 'none';
+        });
+
+        document.getElementById('dismiss-bhatti-btn').addEventListener('click', () => {
+            isInterrupted = false;
+            document.getElementById('bhatti-overlay').style.display = 'none';
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', resetGame);
+        document.getElementById('btn-jab').addEventListener('click', () => triggerHit('jab'));
+        document.getElementById('btn-hook').addEventListener('click', () => triggerHit('hook'));
+        document.getElementById('btn-uppercut').addEventListener('click', () => triggerHit('uppercut'));
+
+        window.addEventListener('keydown', (e) => {
+            if (e.code === 'KeyJ' || e.code === 'Space') triggerHit('jab');
+            if (e.code === 'KeyK') triggerHit('hook');
+            if (e.code === 'KeyL') triggerHit('uppercut');
+        });
+    </script>
+</body>
+</html>
